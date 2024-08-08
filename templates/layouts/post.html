@@ -1,0 +1,77 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<style>
+    /* Estilos específicos para post.html */
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin-top: 70px; /* Asegura que el contenido no se superponga con el navbar */
+    }
+
+    .content {
+        flex: 1;
+        padding: 20px; /* Ajusta el padding según tus necesidades */
+    }
+
+
+
+
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-control {
+        max-width: 100%; /* Asegura que el input no se desborde */
+        width: 300px; /* Ajusta el ancho de los inputs */
+    }
+
+    .btn {
+        display: block;
+        margin: 0 auto;
+    }
+
+
+</style>
+
+<div class="main-container">
+    <div class="content">
+        <div class="container text-center">
+            <h1>Nuevo Post</h1>
+
+            <form method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if post is not None %}
+                    <input type="hidden" value="{{ post.id }}" name="id">
+                {% endif %}
+
+                <div class="form-group my-3">
+                    <label>Titulo</label>
+                    <input type="text" class="form-control" name="title" placeholder="Titulo"
+                    {% if post is not None %}
+                        value="{{ post.title }}"
+                    {% endif %}
+                    >
+                </div>
+
+                <div class="form-group my-3">
+                    <label>Texto</label>
+                    <textarea class="form-control" name="text">{% if post is not None %}{{ post.text }}{% endif %}</textarea>
+                </div>
+
+                <div class="form-group my-3">
+                    <label>Imagen</label>
+                    <input type="file" class="form-control" name="image">
+                </div>
+
+                <button class="btn btn-primary" type="submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

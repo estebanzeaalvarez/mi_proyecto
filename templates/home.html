@@ -1,0 +1,126 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+
+
+<style>
+    .post-image {
+        width: 1080px; /* Tamaño deseado */
+        height: 566px; /* Tamaño deseado */
+        overflow: hidden; /* Oculta cualquier contenido que exceda las dimensiones del contenedor */
+        border-radius: 8px; /* Opcional: añade bordes redondeados */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto; /* Centra el contenedor */
+    }
+
+    .post-image img {
+        max-width: 100%;
+        max-height: 100%; /* Asegura que la imagen no exceda el contenedor */
+        object-fit: cover; /* Mantiene la proporción de la imagen y cubre el contenedor */
+        border: 4px solid black; /* Añade un marco negro alrededor de la imagen */
+        border-radius: 8px; /* Opcional: añade bordes redondeados al marco */
+    }
+
+    @media (max-width: 768px) {
+        .post-image {
+            width: 100%; /* Ajusta el ancho para pantallas más pequeñas */
+            height: auto; /* Mantiene la proporción de altura en pantallas más pequeñas */
+        }
+    }
+
+    .post-container {
+    border: 2px solid rgba(139, 255, 174, 0.7); /* Marco semi-transparente */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 20px; /* Espacio interno */
+    background:  rgba(255, 228, 228, 0.7);
+    margin-bottom: 20px; /* Espacio entre publicaciones */
+    color: #000; /* Color del texto general dentro del contenedor */
+}
+
+.post-container h2 {
+    color: #000; /* Color negro para los títulos */
+}
+
+.post-container p {
+    color: #000; /* Color negro para los párrafos */
+}
+
+
+    .comments-container {
+        margin-top: 10px;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .button-group button {
+        margin-top: 10px;
+    }
+</style>
+
+{% for p in posts %}
+<div class="post-container">
+    <h2> {{ p.title }} </h2>
+    <p> {{ p.text }} </p>
+
+    {% if p.image %}
+        <div class="post-image">
+            <img src="{{ p.image.url }}" alt="Imagen del post">
+        </div>
+    {% endif %}
+
+    <div class="button-group">
+        <button class="btn btn-secondary toggle-comments" data-target="#comments-{{ p.id }}">Mostrar Comentarios</button>
+
+        {% if request.user.is_authenticated and request.user == p.user %}
+            <button class="btn btn-secondary edit-post" onclick="window.location.href='/post/{{ p.id }}'">Editar</button>
+        {% endif %}
+    </div>
+
+    <div class="comments-container" id="comments-{{ p.id }}" style="display: none;">
+        {% for c in p.comment_set.all %}
+            <p> {{c.user.username}} escribió: {{ c.text }} </p>
+        {% endfor %}
+    </div>
+
+    {% if request.user.is_authenticated %}
+        <form method="POST" action="/comment/">
+            {% csrf_token %}
+            <input type="hidden" value="{{p.id}}" name="post">
+            <div class="form-group my-3">
+                <textarea class="form-control" name="text" placeholder="Escribe un Comentario"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit"> Enviar Comentario </button>
+        </form>
+    {% endif %}
+</div>
+{% endfor %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.toggle-comments');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const commentsContainer = document.querySelector(targetId);
+            
+            if (commentsContainer.style.display === 'none') {
+                commentsContainer.style.display = 'block';
+                this.textContent = 'Ocultar Comentarios';
+            } else {
+                commentsContainer.style.display = 'none';
+                this.textContent = 'Mostrar Comentarios';
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Descripción de tu sitio web">
+    <meta name="author" content="Tu Nombre">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}Mi Proyecto{% endblock %}</title>
+    <!-- Bootstrap CSS desde CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="{% static 'styles/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    {% block extra_css %}
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-image: url('https://ethic.es/wp-content/uploads/2021/06/restaurar-5-rec-2-rec-def.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 140%;
+            background: rgba(0, 255, 0, 0.3); /* Filtro verde claro */
+            z-index: -1; /* Asegura que el filtro esté detrás del contenido */
+        }
+
+        main {
+            flex: 1; /* Esto asegura que el contenido principal ocupe el espacio disponible */
+        }
+
+        footer {
+            background-color: #343a40; /* Color igual al navbar */
+            color: #fff; /* Color del texto del footer */
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        .container.my-5 {
+            max-width: 1100px; /* Ajusta el ancho máximo del contenedor según tus necesidades */
+            margin: 0 auto; /* Centra el contenedor horizontalmente */
+            text-align: center; /* Centra el contenido textual dentro del contenedor */
+            position: relative; /* Asegúrate de que los elementos posicionados estén en relación con el contenedor */
+            background: none !important; /* Asegura que el fondo sea transparente */
+        }
+
+        .py-4 {
+            margin: 0 auto;
+            display: inline-block;
+            text-align: center;
+            background: none !important; /* Asegura que el fondo sea transparente */
+        }
+
+        .social-icons a {
+            margin: 0 5px; /* Ajusta el valor según tus necesidades */
+        }
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Django</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Inicio <span class="sr-only">(actual)</span></a>
+                </li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/post">New Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Log Out</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                {% endif %}
+            </ul>    
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main role="main" class="container my-5">
+        <div class="py-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+    
+
+    <!-- Footer -->
+    <footer class="bg-dark text-center text-lg-start mt-4">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Django Project</h5>
+                    <p>Este es mi proyecto final, espero les guste.</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Follow Us</h5>
+                    <div class="d-flex justify-content-center social-icons">
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/tu_pagina" class="text-dark" target="_blank">
+                            <i class="fab fa-facebook-f fa-2x" style="color: #3b5998;"></i>
+                        </a>
+
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/tu_perfil" class="text-dark" target="_blank">
+                            <i class="fab fa-instagram fa-2x" style="color: #ac2bac;"></i>
+                        </a>
+
+                        <!-- Whatsapp -->
+                        <a href="https://wa.me/123456789" class="text-dark" target="_blank">
+                            <i class="fab fa-whatsapp fa-2x" style="color: #25d366;"></i>
+                        </a>
+
+                        <!-- Gmail -->
+                        <a href="mailto:info@mi_proyecto.com" class="text-dark">
+                            <i class="fas fa-envelope fa-2x" style="color: #d14836;"></i>
+                        </a>
+
+                        <!-- Linkedin -->
+                        <a href="https://www.linkedin.com/in/tu_perfil" class="text-dark" target="_blank">
+                            <i class="fab fa-linkedin-in fa-2x" style="color: #0082ca;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Contact</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="mailto:info@mi_proyecto.com" class="text-light">info@mi_proyecto.com</a></li>
+                        <li><a href="tel:+123456789" class="text-light">+123 456 789</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-3 bg-dark">
+            © 2024 Copyright:
+            <a class="text-light" href="#">Miproyectodjango.com</a>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>
